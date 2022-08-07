@@ -22,5 +22,3 @@ git fetch template && git checkout template/main .github
 ```
 
 Затем добавьте полученные изменения в свой репозиторий.
-
-11111111111111111Test

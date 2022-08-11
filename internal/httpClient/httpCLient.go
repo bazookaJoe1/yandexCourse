@@ -152,5 +152,4 @@ func (a *agent) Run(httpCtx context.Context, retChan chan struct{}, metrics *met
 			a.sendReq(metrics)
 		}
 	}
-
 }

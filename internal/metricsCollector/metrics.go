@@ -56,8 +56,7 @@ func MetricsCollectorMain(mCtx context.Context, m *Metrics, retChan chan struct{
 	//mCtx, cancel := context.WithCancel(ctx)
 	defer func() { close(retChan) }()
 
-	MetricsStru := MetricsInit()
-	ticker := MetricsStru.pollTickerInit()
+	ticker := m.pollTickerInit()
 
 	for {
 		select {
@@ -66,9 +65,9 @@ func MetricsCollectorMain(mCtx context.Context, m *Metrics, retChan chan struct{
 			return
 		case <-ticker.C:
 			//MetricsStru.Mu.Lock()
-			MetricsStru.ReadMetrics()
+			m.ReadMetrics()
 			//MetricsStru.Mu.Unlock()
-			log.Printf("---> Metrics collected, Pollcount=%d", MetricsStru.Pollcount)
+			log.Printf("---> Metrics collected, Pollcount=%d", m.Pollcount)
 		default:
 			continue
 		}

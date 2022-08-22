@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func SigHandler(exit_chan chan int) {
+func SigHandler(exitChan chan int) {
 	signalChanel := make(chan os.Signal, 1)
 	signal.Notify(signalChanel,
 		syscall.SIGHUP,
@@ -28,23 +28,23 @@ func SigHandler(exit_chan chan int) {
 				//Сигнал SIGINT отправляется при введении пользователем в управляющем терминале символа прерывания, по умолчанию это ^C (Control-C).
 			case syscall.SIGINT:
 				log.Printf("---> Signal SIGINT triggered.")
-				exit_chan <- 0
+				exitChan <- 0
 
 				// kill -SIGTERM XXXX [XXXX - идентификатор процесса для программы]
 				//SIGTERM — это общий сигнал, используемый для завершения программы.
 			case syscall.SIGTERM:
 				log.Printf("---> Signal SIGTERM triggered.")
-				exit_chan <- 0
+				exitChan <- 0
 
 				// kill -SIGQUIT XXXX [XXXX - идентификатор процесса для программы]
 				//Сигнал SIGQUIT отправляется при введении пользователем в управляющем терминале символа выхода, по умолчанию это ^\ (Control-Backslash).
 			case syscall.SIGQUIT:
 				log.Printf("---> Signal SIGQUIT triggered.")
-				exit_chan <- 0
+				exitChan <- 0
 
 			default:
 				log.Printf("---> Signal <unknown> triggered.")
-				exit_chan <- -1
+				exitChan <- -1
 			}
 		}
 	}()

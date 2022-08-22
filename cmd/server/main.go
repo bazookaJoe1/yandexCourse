@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import httpserver "yandexCourse/internal/httpServer"
 
 func main() {
-	fmt.Printf("hello")
+	server := httpserver.ServerInit()
+	server.RegisterHadnlers()
+	server.Run()
 }

@@ -247,6 +247,8 @@ func (s *Storage) Save(nM string, vM string) error {
 			break
 		}
 		s.values.RandomValue = append(s.values.RandomValue, gauge(val))
+	default:
+		retErr = errors.New("bad value")
 	}
 	s.Mu.Unlock()
 	return retErr

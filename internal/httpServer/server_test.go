@@ -105,6 +105,7 @@ func Test_serverREST(t *testing.T) {
 			if !reflect.DeepEqual(response.StatusCode, tt.want.StatusCode) {
 				t.Errorf("ParseURL() = %v, want %v", response.StatusCode, tt.want.StatusCode)
 			}
+			defer response.Body.Close()
 		})
 	}
 }

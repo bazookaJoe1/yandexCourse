@@ -17,7 +17,7 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		path, err := ParseURL(r.URL)
 		if err != nil {
 			log.Printf("%s", err)
-			http.Error(w, "WrongUrl", http.StatusForbidden)
+			http.Error(w, "WrongUrl", http.StatusNotFound)
 			return
 		}
 
@@ -27,7 +27,7 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		err = h.servM.Save(nameM, valueM)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusForbidden)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		w.Header().Set("Content-Type", "text/plain")
@@ -35,7 +35,7 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte{})
 
 	default:
-		http.Error(w, "FORBIDDEN", http.StatusForbidden)
+		http.Error(w, "WrongMethod", http.StatusBadRequest)
 	}
 
 }

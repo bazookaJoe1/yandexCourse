@@ -1,7 +1,6 @@
 package httpserver
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,7 +14,7 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Handler: got request <%v>", r.Header)
 	switch r.Method {
 	case "POST":
-		path, err := ParseUrl(r.URL)
+		path, err := ParseURL(r.URL)
 		if err != nil {
 			log.Printf("%s", err)
 			http.Error(w, "WrongUrl", http.StatusForbidden)
@@ -40,10 +39,10 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-func ParseUrl(url *url.URL) ([]string, error) {
+func ParseURL(url *url.URL) ([]string, error) {
 	splitted := strings.Split(url.Path, "/")
 	if len(splitted) != 5 {
-		return nil, errors.New(fmt.Sprintf("error url request: %s/%s", url.Host, url.Path))
+		return nil, fmt.Errorf("error url request: %s/%s", url.Host, url.Path)
 	}
 	return splitted, nil
 }

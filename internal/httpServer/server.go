@@ -27,8 +27,14 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		err = h.servM.Save(typeM, nameM, valueM)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			switch err.Error() {
+			case "bad value":
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			case "not implemented":
+				http.Error(w, err.Error(), http.StatusNotImplemented)
+				return
+			}
 		}
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)

@@ -31,9 +31,9 @@ func (s *Storage) Save(tM string, nM string, vM string) error {
 		}
 		s.values[nM] = append(s.values[nM], Counter(val))
 	} else {
-		retErr = errors.New("bad value")
+		retErr = errors.New("not implemented")
 	}
-
+	s.Mu.Unlock()
 	return retErr
 }
 func (s *Storage) Get() {}

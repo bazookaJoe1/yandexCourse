@@ -21,11 +21,11 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//typeM := path[1]
+		typeM := path[1]
 		nameM := path[3]
 		valueM := path[4]
 
-		err = h.servM.Save(nameM, valueM)
+		err = h.servM.Save(typeM, nameM, valueM)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

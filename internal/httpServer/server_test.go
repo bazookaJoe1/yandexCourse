@@ -74,27 +74,27 @@ func Test_serverREST(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		/*
-			{
-				name: "Invalid path counter",
-				args: args{
-					url: "http://localhost:8080/update/counter/counter/none",
-				},
-				want:    &http.Response{StatusCode: 400},
-				wantErr: false,
+
+		{
+			name: "Invalid path counter",
+			args: args{
+				url: "http://localhost:8080/update/counter/counter/none",
 			},
-			{
-				name: "Invalid path gauge",
-				args: args{
-					url: "http://localhost:8080/update/counter/gauge/none",
-				},
-				want:    &http.Response{StatusCode: 400},
-				wantErr: false,
-			},*/
+			want:    &http.Response{StatusCode: 400},
+			wantErr: false,
+		},
+		{
+			name: "Invalid path gauge",
+			args: args{
+				url: "http://localhost:8080/update/counter/gauge/none",
+			},
+			want:    &http.Response{StatusCode: 400},
+			wantErr: false,
+		},
 		{
 			name: "Correct counter",
 			args: args{
-				url: "http://localhost:8080/update/counter/counter/100",
+				url: "http://localhost:8080/update/counter/testCounter/100",
 			},
 			want:    &http.Response{StatusCode: 200},
 			wantErr: false,

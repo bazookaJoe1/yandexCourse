@@ -21,7 +21,7 @@ func (h handlerUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		typeM := path[1]
+		typeM := path[2]
 		nameM := path[3]
 		valueM := path[4]
 

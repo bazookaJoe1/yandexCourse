@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// ServerInit() initializes struct for server and returns it as a pointer.
 func ServerInit() *serverM {
 	serverM := &serverM{Storage: storage.StorageInit()}
 
@@ -36,15 +37,18 @@ func ServerInit() *serverM {
 
 // processUpdate(context echo.Context) processes Url with metrics data and tries to save it in storage. This is main route function of server.
 func (serverM *serverM) processUpdate(context echo.Context) error {
-	var retErr error = context.String(http.StatusOK, "Metric saved")
 	errCounter := errors.New("wrong type of counter")
 	errGauge := errors.New("wrong type of gauge")
+
+	log.Printf("Got POST request: %s", context.Request().URL.Path)
 
 	TypeM, NameM, ValueM, err := parseURL(context)
 	if err != nil {
 		log.Printf("Got invalid URL in parseURL(): <%v>", context.Request().URL.Path)
 		return context.String(http.StatusBadRequest, fmt.Sprintf("Bad URL: <%v>", context.Request().URL.Path))
 	}
+
+	var retErr error = context.String(http.StatusOK, fmt.Sprintf("Metric <%s> with value <%s> was saved.", NameM, ValueM))
 
 	saveErr := serverM.Storage.Save(TypeM, NameM, ValueM)
 	if saveErr != nil {
@@ -84,4 +88,5 @@ func (serverM *serverM) Run() {
 	if err := serverM.serverHTTP.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
+	log.Printf("Server started.")
 }

@@ -12,7 +12,6 @@ type (
 
 	Storage struct {
 		sync.RWMutex
-		values  map[string][]any
-		counter uint
+		values map[string][]any
 	}
 )

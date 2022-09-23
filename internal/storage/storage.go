@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/labstack/gommon/log"
+	"log"
 )
 
 func (s *Storage) Get() error { return nil }
@@ -20,23 +20,25 @@ func (s *Storage) Save(TypeM, NameM, ValueM string) error {
 	case "counter":
 		if ValueU, err := checkCounter(ValueM); err != nil {
 			err = errors.New("wrong type of counter")
-			log.Errorf("Wrong type of counter <%v>", ValueM)
+			log.Printf("Wrong type of counter <%v>", ValueM)
 			return err
 		} else {
 			s.values[NameM] = append(s.values[NameM], ValueU)
+			log.Printf("Counter <%s> with value <%s> saved.", NameM, ValueM)
 		}
 
 	case "gauge":
 		if ValueF, err := checkGauge(ValueM); err != nil {
 			err = errors.New("wrong type of gauge")
-			log.Errorf("Wrong type of gauge <%v>", ValueM)
+			log.Printf("Wrong type of gauge <%v>", ValueM)
 			return err
 		} else {
 			s.values[NameM] = append(s.values[NameM], ValueF)
+			log.Printf("Gauge metric <%s> with value <%s> saved.", NameM, ValueM)
 		}
 	default:
 		err = errors.New("not implemented type of metric")
-		log.Errorf("Not implemented type of metric <%v>", TypeM)
+		log.Printf("Not implemented type of metric <%v>", TypeM)
 		return err
 	}
 
@@ -53,7 +55,7 @@ func checkCounter(ValueM string) (uint, error) {
 
 	if ValueU, err := strconv.ParseUint(ValueM, 10, 64); err != nil {
 		err := errors.New("wrong type of counter")
-		log.Errorf("Wrong type of counter <%v>", ValueM)
+		log.Printf("Wrong type of counter <%v>", ValueM)
 		return uint(ValueU), err
 	} else {
 
@@ -65,7 +67,7 @@ func checkCounter(ValueM string) (uint, error) {
 func checkGauge(ValueM string) (float64, error) {
 	if ValueF, err := strconv.ParseFloat(ValueM, 64); err != nil {
 		err := errors.New("wrong type of gauge")
-		log.Errorf("Wrong type of gauge <%v>", ValueM)
+		log.Printf("Wrong type of gauge <%v>", ValueM)
 		return float64(ValueF), err
 	} else {
 

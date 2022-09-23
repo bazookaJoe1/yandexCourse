@@ -7,7 +7,7 @@ import (
 
 type (
 	serverM struct {
-		serverHttp *http.Server
+		serverHTTP *http.Server
 		Storage    storage.Repositories
 	}
 )

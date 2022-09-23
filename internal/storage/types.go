@@ -1,28 +1,18 @@
 package storage
 
 import (
-	"fmt"
 	"sync"
 )
 
 type (
-	gauge        float64
-	Counter      uint64
-	repositories interface {
-		Save()
-		Get()
+	Repositories interface {
+		Save(TypeM, NameM, ValueM string) error
+		Get() error
 	}
 
 	Storage struct {
-		Mu     sync.Mutex
-		values map[string][]fmt.Stringer
+		sync.RWMutex
+		values  map[string][]any
+		counter uint
 	}
 )
-
-func (g gauge) String() string {
-	return fmt.Sprintf("%v", float64(g))
-}
-
-func (c Counter) String() string {
-	return fmt.Sprintf("%v", uint64(c))
-}

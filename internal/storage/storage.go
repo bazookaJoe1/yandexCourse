@@ -2,38 +2,73 @@ package storage
 
 import (
 	"errors"
-	"fmt"
-	"log"
 	"strconv"
-	"sync"
+
+	"github.com/labstack/gommon/log"
 )
 
-func StorageInit() *Storage {
-	return &Storage{Mu: sync.Mutex{}, values: make(map[string][]fmt.Stringer)}
-}
+func (s *Storage) Get() error { return nil }
 
-func (s *Storage) Save(tM string, nM string, vM string) error {
-	var retErr error = nil
-	s.Mu.Lock()
+// Save(TypeM, NameM, ValueM string) according to TypeM (type of metric) performs check of ValueM (value of metric) and saves it to storage.
+func (s *Storage) Save(TypeM, NameM, ValueM string) error {
+	s.Lock()
+	defer s.Unlock()
 
-	if tM == "gauge" {
-		val, err := strconv.ParseFloat(vM, 64)
-		if err != nil {
-			retErr = errors.New("bad value")
-			log.Printf("storage.go (metrics %s): cannot parse metric value <%v>", nM, vM)
+	var err error = nil
+
+	switch TypeM {
+	case "counter":
+		if ValueU, err := checkCounter(ValueM); err != nil {
+			err = errors.New("wrong type of counter")
+			log.Errorf("Wrong type of counter <%v>", ValueM)
+			return err
+		} else {
+			s.values[NameM] = append(s.values[NameM], ValueU)
 		}
-		s.values[nM] = append(s.values[nM], gauge(val))
-	} else if tM == "counter" {
-		val, err := strconv.ParseUint(vM, 10, 64)
-		if err != nil {
-			retErr = errors.New("bad value")
-			log.Printf("storage.go (metrics %s): cannot parse metric value <%v>", nM, vM)
+
+	case "gauge":
+		if ValueF, err := checkGauge(ValueM); err != nil {
+			err = errors.New("wrong type of gauge")
+			log.Errorf("Wrong type of gauge <%v>", ValueM)
+			return err
+		} else {
+			s.values[NameM] = append(s.values[NameM], ValueF)
 		}
-		s.values[nM] = append(s.values[nM], Counter(val))
-	} else {
-		retErr = errors.New("not implemented")
+	default:
+		err = errors.New("not implemented type of metric")
+		log.Errorf("Not implemented type of metric <%v>", TypeM)
+		return err
 	}
-	s.Mu.Unlock()
-	return retErr
+
+	return err
 }
-func (s *Storage) Get() {}
+
+// StorageInit() returns a pointer to Storage struct that implements repositories interface.
+func StorageInit() Repositories {
+	return &Storage{values: make(map[string][]any)}
+}
+
+// checkCounter(ValueM string) performs check of correct counter value in ValueM (value of metrics).
+func checkCounter(ValueM string) (uint, error) {
+
+	if ValueU, err := strconv.ParseUint(ValueM, 10, 64); err != nil {
+		err := errors.New("wrong type of counter")
+		log.Errorf("Wrong type of counter <%v>", ValueM)
+		return uint(ValueU), err
+	} else {
+
+		return uint(ValueU), err
+	}
+}
+
+// checkGauge(ValueM string) performs check of correct gauge value in ValueM (value of metrics).
+func checkGauge(ValueM string) (float64, error) {
+	if ValueF, err := strconv.ParseFloat(ValueM, 64); err != nil {
+		err := errors.New("wrong type of gauge")
+		log.Errorf("Wrong type of gauge <%v>", ValueM)
+		return float64(ValueF), err
+	} else {
+
+		return float64(ValueF), err
+	}
+}

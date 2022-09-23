@@ -2,19 +2,12 @@ package httpserver
 
 import (
 	"net/http"
-	"sync"
 	"yandexCourse/internal/storage"
 )
 
 type (
-	handlerUpdate struct {
-		resp  []byte
-		servM *storage.Storage
+	serverM struct {
+		serverHttp *http.Server
+		Storage    storage.Repositories
 	}
-	server struct {
-		Mu      sync.Mutex
-		server  *http.Server
-		handler *handlerUpdate
-	}
-	Middleware func(http.Handler) http.Handler
 )

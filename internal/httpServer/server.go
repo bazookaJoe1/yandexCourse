@@ -28,7 +28,7 @@ func ServerInit() *serverM {
 		Handler: echoS,
 	}
 
-	serverM.serverHttp = server
+	serverM.serverHTTP = server
 
 	return serverM
 
@@ -40,9 +40,9 @@ func (serverM *serverM) processUpdate(context echo.Context) error {
 	errCounter := errors.New("wrong type of counter")
 	errGauge := errors.New("wrong type of gauge")
 
-	TypeM, NameM, ValueM, err := parseUrl(context)
+	TypeM, NameM, ValueM, err := parseURL(context)
 	if err != nil {
-		log.Printf("Got invalid URL in parseUrl(): <%v>", context.Request().URL.Path)
+		log.Printf("Got invalid URL in parseURL(): <%v>", context.Request().URL.Path)
 		return context.String(http.StatusBadRequest, fmt.Sprintf("Bad URL: <%v>", context.Request().URL.Path))
 	}
 
@@ -66,8 +66,8 @@ func (serverM *serverM) nonexistentPath(context echo.Context) error {
 	return context.String(http.StatusNotFound, "Page you requested is not found")
 }
 
-// parseUrl(context echo.Context) (string, string, string, error) performs parsing of request URL and returns <Type of metric>, <Name of metric>, <Value of metric> and error
-func parseUrl(context echo.Context) (string, string, string, error) {
+// parseURL(context echo.Context) (string, string, string, error) performs parsing of request URL and returns <Type of metric>, <Name of metric>, <Value of metric> and error
+func parseURL(context echo.Context) (string, string, string, error) {
 	var url string = context.Request().URL.Path
 
 	urlSlice := strings.Split(url, "/")
@@ -81,7 +81,7 @@ func parseUrl(context echo.Context) (string, string, string, error) {
 
 // Run() starts server.
 func (serverM *serverM) Run() {
-	if err := serverM.serverHttp.ListenAndServe(); err != http.ErrServerClosed {
+	if err := serverM.serverHTTP.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
 }

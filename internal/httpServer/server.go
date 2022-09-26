@@ -70,7 +70,7 @@ func (serverM *serverM) nonexistentPath(context echo.Context) error {
 
 // parseURL(context echo.Context) (string, string, string, error) performs parsing of request URL and returns <Type of metric>, <Name of metric>, <Value of metric> and error
 func parseURL(context echo.Context) (string, string, string, error) {
-	var url string = context.Request().URL.Path
+	var url = context.Request().URL.Path
 
 	urlSlice := strings.Split(url, "/")
 

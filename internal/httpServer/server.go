@@ -50,10 +50,10 @@ func (serverM *serverM) processUpdate(context echo.Context) error {
 
 	saveErr := serverM.Storage.Save(TypeM, NameM, ValueM)
 	if saveErr != nil {
-		switch saveErr {
-		case errCounter:
+		switch saveErr.Error() {
+		case errCounter.Error():
 			return context.String(http.StatusBadRequest, fmt.Sprintf("Bad counter: <%v>", context.Request().URL.Path))
-		case errGauge:
+		case errGauge.Error():
 			return context.String(http.StatusBadRequest, fmt.Sprintf("Bad gauge: <%v>", context.Request().URL.Path))
 		default:
 			return context.String(http.StatusNotImplemented, fmt.Sprintf("Not implemented: <%v>", context.Request().URL.Path))

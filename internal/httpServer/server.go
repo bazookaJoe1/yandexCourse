@@ -45,10 +45,8 @@ func (serverM *serverM) processUpdate(context echo.Context) error {
 	TypeM, NameM, ValueM, err := parseURL(context)
 	if err != nil {
 		log.Printf("Got invalid URL in parseURL(): <%v>", context.Request().URL.Path)
-		return context.String(http.StatusBadRequest, fmt.Sprintf("Bad URL: <%v>", context.Request().URL.Path))
+		return context.String(http.StatusNotFound, fmt.Sprintf("Bad URL: <%v>", context.Request().URL.Path))
 	}
-
-	var retErr error = context.String(http.StatusOK, fmt.Sprintf("Metric <%s> with value <%s> was saved.", NameM, ValueM))
 
 	saveErr := serverM.Storage.Save(TypeM, NameM, ValueM)
 	if saveErr != nil {
@@ -61,7 +59,7 @@ func (serverM *serverM) processUpdate(context echo.Context) error {
 			return context.String(http.StatusNotImplemented, fmt.Sprintf("Not implemented: <%v>", context.Request().URL.Path))
 		}
 	}
-	return retErr
+	return context.String(http.StatusOK, fmt.Sprintf("Metric <%s> with value <%s> was saved.", NameM, ValueM))
 }
 
 // nonexistentPath(context echo.Context) processes nonexistant paths on server and returns 404 error.

@@ -19,7 +19,7 @@ func ServerInit() *serverM {
 	echoS := echo.New()
 	echoS.Any("/*", func(context echo.Context) error {
 		log.Printf("ERROR. Got request. URL: %s. Method: %s", context.Request().URL.Path, context.Request().Method)
-		return context.String(http.StatusBadRequest, "400 Bad Request: Wrong method")
+		return context.String(http.StatusMethodNotAllowed, "405 Method Not Allowed")
 	})
 	echoS.POST("/*", serverM.nonexistentPath)
 	echoS.POST("/update/*", serverM.processUpdate)
@@ -74,7 +74,7 @@ func parseURL(context echo.Context) (string, string, string, error) {
 
 	urlSlice := strings.Split(url, "/")
 
-	if len(urlSlice) < 5 {
+	if len(urlSlice) != 5 {
 		return "", "", "", errors.New("invalid url")
 	}
 

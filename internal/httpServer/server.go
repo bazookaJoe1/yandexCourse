@@ -21,7 +21,7 @@ func ServerInit() *ServerM {
 		return context.String(http.StatusMethodNotAllowed, "405 Method Not Allowed")
 	})
 	echoS.POST("/*", ServerM.nonexistentPath)
-	echoS.POST("/update/*", ServerM.processUpdate)
+	echoS.POST("/update/:type/:name/:value", ServerM.processUpdate)
 
 	server := &http.Server{
 		Addr:    "localhost:8080",

@@ -58,7 +58,7 @@ func TestStorage_Save(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &Storage{
 				RWMutex: sync.RWMutex{},
-				values:  make(map[string][]any),
+				values:  make(map[string]any),
 			}
 			if err := s.Save(tt.args.TypeM, tt.args.NameM, tt.args.ValueM); (err != nil) != tt.wantErr {
 				t.Errorf("Storage.Save() error = %v, wantErr %v", err, tt.wantErr)

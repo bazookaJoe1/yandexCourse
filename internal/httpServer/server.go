@@ -22,6 +22,8 @@ func ServerInit() *ServerM {
 	})
 	echoS.POST("/*", ServerM.nonexistentPath)
 	echoS.POST("/update/:type/:name/:value", ServerM.processUpdate)
+	echoS.GET("/value/:type/:name", ServerM.processGetMetric)
+	echoS.GET("/", ServerM.processAllMetrics)
 
 	server := &http.Server{
 		Addr:    "localhost:8080",
@@ -63,6 +65,22 @@ func (ServerM *ServerM) processUpdate(context echo.Context) error {
 func (ServerM *ServerM) nonexistentPath(context echo.Context) error {
 	log.Printf("Requested nonexistent page: <%v>", context.Request().URL.Path)
 	return context.String(http.StatusNotFound, "Page you requested is not found")
+}
+
+func (ServerM *ServerM) processGetMetric(context echo.Context) error {
+	typeM := context.Param("type")
+	nameM := context.Param("name")
+
+	valueM, err := ServerM.Storage.Get(typeM, nameM)
+	if err != nil {
+		return context.String(http.StatusNotFound, "Page you requested is not found")
+	}
+
+	return context.String(http.StatusOK, valueM)
+}
+
+func (ServerM *ServerM) processAllMetrics(context echo.Context) error {
+	return context.HTML(http.StatusOK, fmt.Sprintf("<strong>%s</strong>", ServerM.Storage.GetAll()))
 }
 
 // Run() starts server.

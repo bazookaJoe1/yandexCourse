@@ -2,12 +2,62 @@ package storage
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"log"
 )
 
-func (s *Storage) Get() error { return nil }
+func (s *Storage) GetAll() string {
+	s.Lock()
+	defer s.Unlock()
+
+	var outputString = ""
+
+	for nameM, valueM := range s.values {
+		var valueD uint = 0
+		var valueS = ""
+
+		valueD, ok := valueM.(uint)
+		if !ok {
+			valueD, _ := valueM.(float64)
+			valueS = strconv.FormatFloat(valueD, 'f', 2, 64)
+		} else {
+			valueS = strconv.FormatUint(uint64(valueD), 10)
+		}
+
+		outputString += fmt.Sprintf("<BR>%s: %s</BR>", nameM, valueS)
+	}
+
+	return outputString
+
+}
+
+func (s *Storage) Get(TypeM, NameM string) (string, error) {
+	s.Lock()
+	defer s.Unlock()
+
+	var err error = nil
+	var ValueS = ""
+
+	switch TypeM {
+	case "counter":
+		if ValueM, found := s.values[NameM].(uint); found {
+			ValueS = strconv.FormatUint(uint64(ValueM), 10)
+		} else {
+			return "", fmt.Errorf("metric not found")
+		}
+	case "gauge":
+		if ValueM, found := s.values[NameM].(float64); found {
+			ValueS = strconv.FormatFloat(ValueM, 'f', 10, 64)
+		} else {
+			return "", fmt.Errorf("metric not found")
+		}
+	default:
+		return "", fmt.Errorf("metric not found")
+	}
+	return ValueS, err
+}
 
 // Save(TypeM, NameM, ValueM string) according to TypeM (type of metric) performs check of ValueM (value of metric) and saves it to storage.
 func (s *Storage) Save(TypeM, NameM, ValueM string) error {
@@ -23,7 +73,7 @@ func (s *Storage) Save(TypeM, NameM, ValueM string) error {
 			log.Printf("Wrong type of counter <%v>", ValueM)
 			return err
 		} else {
-			s.values[NameM] = append(s.values[NameM], ValueU)
+			s.values[NameM] = ValueU
 			log.Printf("Counter <%s> with value <%s> saved.", NameM, ValueM)
 		}
 
@@ -33,7 +83,7 @@ func (s *Storage) Save(TypeM, NameM, ValueM string) error {
 			log.Printf("Wrong type of gauge <%v>", ValueM)
 			return err
 		} else {
-			s.values[NameM] = append(s.values[NameM], ValueF)
+			s.values[NameM] = ValueF
 			log.Printf("Gauge metric <%s> with value <%s> saved.", NameM, ValueM)
 		}
 	default:
@@ -47,7 +97,7 @@ func (s *Storage) Save(TypeM, NameM, ValueM string) error {
 
 // StorageInit() returns a pointer to Storage struct that implements repositories interface.
 func StorageInit() Repositories {
-	return &Storage{values: make(map[string][]any)}
+	return &Storage{values: make(map[string]any)}
 }
 
 // checkCounter(ValueM string) performs check of correct counter value in ValueM (value of metrics).

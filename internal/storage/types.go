@@ -12,11 +12,12 @@ const (
 type (
 	Repositories interface {
 		Save(TypeM, NameM, ValueM string) error
-		Get() error
+		Get(TypeM, NameM string) (string, error)
+		GetAll() string
 	}
 
 	Storage struct {
 		sync.RWMutex
-		values map[string][]any
+		values map[string]any
 	}
 )

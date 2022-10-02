@@ -4,6 +4,11 @@ import (
 	"sync"
 )
 
+const (
+	BADCOUNTER = iota
+	BADGAUGE
+)
+
 type (
 	Repositories interface {
 		Save(TypeM, NameM, ValueM string) error

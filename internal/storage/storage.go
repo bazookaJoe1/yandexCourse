@@ -21,7 +21,7 @@ func (s *Storage) GetAll() string {
 		valueD, ok := valueM.(uint)
 		if !ok {
 			valueD, _ := valueM.(float64)
-			valueS = strconv.FormatFloat(valueD, 'f', 2, 64)
+			valueS = strconv.FormatFloat(valueD, 'f', 3, 64)
 		} else {
 			valueS = strconv.FormatUint(uint64(valueD), 10)
 		}
@@ -49,7 +49,7 @@ func (s *Storage) Get(TypeM, NameM string) (string, error) {
 		}
 	case "gauge":
 		if ValueM, found := s.values[NameM].(float64); found {
-			ValueS = strconv.FormatFloat(ValueM, 'f', 10, 64)
+			ValueS = strconv.FormatFloat(ValueM, 'f', 3, 64)
 		} else {
 			return "", fmt.Errorf("metric not found")
 		}

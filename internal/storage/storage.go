@@ -73,8 +73,14 @@ func (s *Storage) Save(TypeM, NameM, ValueM string) error {
 			log.Printf("Wrong type of counter <%v>", ValueM)
 			return err
 		} else {
-			s.values[NameM] = ValueU
-			log.Printf("Counter <%s> with value <%s> saved.", NameM, ValueM)
+			if value, ok := s.values[NameM].(uint); ok {
+				s.values[NameM] = ValueU + value
+				log.Printf("Counter <%s> with value <%s> added.", NameM, ValueM)
+			} else {
+				s.values[NameM] = ValueU
+				log.Printf("Counter <%s> with value <%s> saved.", NameM, ValueM)
+			}
+
 		}
 
 	case "gauge":
